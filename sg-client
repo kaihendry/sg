@@ -6,7 +6,8 @@
 # Check if time is sane
 if test $(date +%s) -lt 1378882344
 then
-	return 1
+	echo "Time is in the past: $(date)" 1>&2
+	exit 1
 fi
 
 # Setup your SSH_ENV like so: https://github.com/kaihendry/Kai-s--HOME/blob/master/.xinitrc
