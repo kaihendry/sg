@@ -1,0 +1,39 @@
+#!/bin/bash
+SSH_ENV=$HOME/.ssh/environment
+. ${SSH_ENV} > /dev/null
+
+t=$(mktemp)
+cat /dev/stdin > $t # save stdin in case we need to redo the command
+
+sr=/var/stats
+id=$(cat /etc/machine-id)
+g="unnamed"
+
+while getopts "g:d:i:" o
+do
+	case "$o" in
+	(g) g="$OPTARG";;
+	(d) d="$OPTARG";;
+	(i) i="$OPTARG";;
+	esac
+done
+shift $((OPTIND - 1))
+
+f="$sr/$id/$g/$(date +%j).csv"
+
+if ! test "$d"
+then
+	mkdir -p $(dirname $f)
+	cat $t >> $f
+	test "$?" -eq 0 &&  echo Appended to: $f
+else
+
+	if ! cat $t | ssh $d "cat - >> $f"
+	then
+		ssh $d "mkdir -p $(dirname $f)"
+		cat $t | ssh $d "cat - >> $f"
+	fi
+
+fi
+
+rm -f $t
