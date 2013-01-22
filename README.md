@@ -7,7 +7,7 @@
 	/srv/www$ ln -s /var/sg stats.example.com
 	SG_HOST=$(hostname)
 
-## On a machine you want to monitor temperature and send it to $SG_HOST like so
+## Machine you want to monitor temperature and send it to $SG_HOST like so
 
 	sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
 
@@ -23,14 +23,14 @@ TODO:
 
 * Graph for daily `$(ls -t *.csv | tail -n1)`
 * Graph for last three days `$(ls -t *.csv | tail -n3)`
-* JSON / flot / rickshaw / morris.js
+* JSON &rarr; [flot](http://www.flotcharts.org/) / [rickshaw](http://code.shutterstock.com/rickshaw/) / [morris.js](http://www.oesmith.co.uk/morris.js/)
 * Emulate http://www.geckoboard.com/
 
 ## On $SG_HOST you might want to log the load avg
 
 	cat /proc/loadavg | sg-client -g load
 
-You don't need to use `sg-*` this over SSH. No destination implies local.
+You don't need to use SSH. No destination implies local.
 
 ## Running the service on $SG_HOST
 
