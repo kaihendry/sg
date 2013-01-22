@@ -43,6 +43,8 @@ You don't need to use SSH. No destination implies local.
 When a CSV file is appended to, the linked in graph scripts are called and
 the graphs they produce are in turn updated.
 
-## Example graph that's updated every 5 minutes
+## Example graph that is updated every 5 minutes
+
+	*/5 * * * * ID=temp sg-client -d stats.webconverger.org -g temp /sys/class/thermal/thermal_zone0/temp
 
 <img width=640 height=480 src=http://stats.webconverger.org/35634830e80b2d6371739680000003a4/temp/all.png>
