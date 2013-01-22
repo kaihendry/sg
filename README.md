@@ -1,7 +1,7 @@
 # Setting up "suckless graphing"
 
 	mkdir /var/sg
-	chown $USER:www-data /var/sg
+	chown -R $USER:www-data /var/sg
 	cd /var/sg
 	/var/sg$ git clone git@github.com:kaihendry/sg.git bin
 	/srv/www$ ln -s /var/sg stats.example.com
@@ -11,11 +11,11 @@
 
 	sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
 
-We typically need a destination and a name for the graph.
+We typically need a destination (`-d`) and a name (`-g`) for the graph.
 
 ## Enabling an example grapher by simply linking them in
 
-	mx:/var/sg/35634830e80b2d6371739680000003a4/temp$ ln -s ../../bin/all-png.sh
+	$SG_HOST:/var/sg/35634830e80b2d6371739680000003a4/temp$ ln -s ../../bin/all-png.sh
 
 Create your own graphing script, and share it? :)
 
@@ -34,13 +34,13 @@ You don't need to use SSH. No destination implies local.
 
 ## Running the service on $SG_HOST
 
-	mx:/var/sg/bin$ ./sg-service
+	$SG_HOST:/var/sg/bin$ ./sg-service
 	Setting up watches.  Beware: since -r was given, this may take a while!
 	Watches established.
 	Warning: empty y range [67000:67000], adjusting to [66330:67670]
 	Triggered: /var/sg/35634830e80b2d6371739680000003a4/temp/all-png.sh
 
-Everytime a CSV file is appended, the linked in graph scripts are called and
+Everytime a CSV file is appended to, the linked in graph scripts are called and
 the graphs they produce are in turn updated.
 
 ## Example graph that's updated every 5 minutes
