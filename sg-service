@@ -1,8 +1,10 @@
 #!/bin/bash
 
+sr=/var/sg # sg's root
+
 np=$(mktemp -u)
 mkfifo $np
-inotifywait -r -m -e CLOSE_WRITE /var/stats > $np & ipid=$!
+inotifywait -r -m -e CLOSE_WRITE $sr > $np & ipid=$!
 
 trap "kill $ipid; rm -f $np" EXIT
 
