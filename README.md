@@ -26,7 +26,7 @@ TODO:
 * JSON &rarr; [flot](http://www.flotcharts.org/) / [rickshaw](http://code.shutterstock.com/rickshaw/) / [morris.js](http://www.oesmith.co.uk/morris.js/)
 * Emulate http://www.geckoboard.com/
 
-## On $SG_HOST you might want to log the load avg
+## On $SG_HOST you might want to log the load average
 
 	cat /proc/loadavg | sg-client -g load
 
@@ -40,7 +40,7 @@ You don't need to use SSH. No destination implies local.
 	Warning: empty y range [67000:67000], adjusting to [66330:67670]
 	Triggered: /var/sg/35634830e80b2d6371739680000003a4/temp/all-png.sh
 
-Everytime a CSV file is appended to, the linked in graph scripts are called and
+When a CSV file is appended to, the linked in graph scripts are called and
 the graphs they produce are in turn updated.
 
 ## Example graph that's updated every 5 minutes
