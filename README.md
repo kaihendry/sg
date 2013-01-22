@@ -28,3 +28,7 @@ Create your own graphing script, and share it? :)
 	Watches established.
 	Warning: empty y range [67000:67000], adjusting to [66330:67670]
 	Triggered: /var/sg/35634830e80b2d6371739680000003a4/temp/all-png.sh
+
+## Example graph that's updated every 5 minutes
+
+<img width=640 height=480 src=http://stats.webconverger.org/35634830e80b2d6371739680000003a4/temp/all.png>
