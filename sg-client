@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Designed to be run from the crontab, for example:
 # To log every 5 mins your laptop's temperature to your $SG_HOST
 # */5 * * * * ID=temp sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
@@ -11,8 +10,7 @@ then
 	# Use systemd's machine-id
 	id=$(cat /etc/machine-id)
 else
-	# Or the first mac we find
-	id=$(for i in /sys/class/net/*/address; do tr -d ":" < $i; done | head -n1)
+	id=$(hostname)
 fi
 
 # Every graph needs a name
