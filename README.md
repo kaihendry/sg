@@ -7,13 +7,13 @@
 	/srv/www$ ln -s /var/sg stats.example.com
 	SG_HOST=$(hostname)
 
-## Machine you want to monitor temperature and send it to $SG_HOST like so
+## Machine you want to monitor temperature and send it to $SG_HOST
 
 	sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
 
 We typically need a destination and a name for the graph.
 
-## Enabling an example grapher
+## Enabling an example grapher by simply linking them in
 
 	mx:/var/sg/35634830e80b2d6371739680000003a4/temp$ ln -s ../../bin/all-png.sh
 
@@ -40,8 +40,8 @@ You don't need to use SSH. No destination implies local.
 	Warning: empty y range [67000:67000], adjusting to [66330:67670]
 	Triggered: /var/sg/35634830e80b2d6371739680000003a4/temp/all-png.sh
 
-Everytime a CSV file is update, the linked in graph scripts are called and the
-graphs they produce are in turn updated.
+Everytime a CSV file is appended, the linked in graph scripts are called and
+the graphs they produce are in turn updated.
 
 ## Example graph that's updated every 5 minutes
 
