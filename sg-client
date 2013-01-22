@@ -1,6 +1,8 @@
 #!/bin/bash
+
 # Designed to be run from the crontab, for example:
-# */5 * * * * ID=temp sg-client -d sg -g temp /sys/class/thermal/thermal_zone0/temp
+# To log every 5 mins your laptop's temperature to your $SG_HOST
+# */5 * * * * ID=temp sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
 
 sr=/var/sg # sg's root
 
