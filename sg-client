@@ -42,7 +42,7 @@ then
 
 # TODO: if this fails due to network issues we need some suckless way of caching
 
-	if ! echo $m | ssh $d "cat - >> $f"
+	if ! echo $m | ssh $d "cat - >> $f" &>/dev/null
 	then
 		ssh $d "mkdir -p $(dirname $f)"
 		echo $m | ssh $d "cat - >> $f" &&
