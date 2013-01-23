@@ -18,7 +18,7 @@ We typically need a destination (`-d`) and a name (`-g`) for the graph.
 
 ## Enabling an example grapher by simply linking them in
 
-	$SG_HOST:/var/sg/x220/temp$ ln -s ../../bin/all-png.sh
+	$SG_HOST:/var/sg/x220/temp$ ln -s ../../bin/g/all-png.sh
 
 Create your own graphing script, and share it? :)
 
