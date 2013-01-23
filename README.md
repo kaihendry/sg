@@ -55,3 +55,31 @@ in turn updated.
 	*/5 * * * * ID=temp sg-client -d stats.webconverger.org -g temp /sys/class/thermal/thermal_zone0/temp
 
 <img width=640 height=480 src=http://stats.webconverger.org/x220/temp/all.png>
+
+## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory
+
+TODO: Somehow limit to just appending and creating directories
+
+$SG_HOST's `/etc/passwd` entry:
+
+	stats:x:1006:1006::/home/stats:/bin/sh
+
+Append keys to `/home/stats/.ssh/authorized_keys`
+
+in `/etc/ssh/sshd_config`:
+
+	Match user stats
+	  ChrootDirectory /var/sg
+
+You will see `fatal: bad ownership or modes for chroot directory "/var/sg"`
+unless it's owned by root. You can alter subdirectory permissions to whatever you want.
+
+Next you will see failing with: `/bin/sh: No such file or directory`
+
+	cp /bin/busybox /var/sg/bin/sh
+
+Test with `ssh stats@SG_HOST`
+
+Crontab root needs to be tweaked like so:
+
+	*/10 * * * * /var/sg/bin/c/temp.sh | /var/sg/bin/sg-client -r / -g temp -d stats@sg.webconverger.com
