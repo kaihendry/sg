@@ -5,13 +5,8 @@
 
 sr=/var/sg # sg's root
 
-if test -f /etc/machine-id
-then
-	# Use systemd's machine-id
-	id=$(cat /etc/machine-id)
-else
-	id=$(hostname)
-fi
+# to identify where the data is coming from
+id=$(hostname)
 
 # Every graph needs a name
 g="unnamed"
@@ -21,7 +16,7 @@ do
 	case "$o" in
 	(g) g="$OPTARG";; # graph name
 	(d) d="$OPTARG";; # destination
-	(i) id="$OPTARG";;# client id
+	(i) id="$OPTARG";;# override hostname as client id
 	esac
 done
 shift $((OPTIND - 1))
@@ -40,10 +35,12 @@ fi
 if test "$d" # we are ssh-ing if we have a destination
 then
 
-	# Try use an authenicated socket
+	# Try use an authenticated socket, it's fast
 	# See: https://github.com/kaihendry/Kai-s--HOME/blob/master/.xinitrc#L9
 	SSH_ENV=$HOME/.ssh/environment
 	test -f ${SSH_ENV} && . ${SSH_ENV} > /dev/null
+
+# TODO: if this fails due to network issues we need some suckless way of caching
 
 	if ! echo $m | ssh $d "cat - >> $f"
 	then
@@ -53,6 +50,8 @@ then
 	fi
 
 else # we are local
+
+# This should not fail once setup
 
 	mkdir -p $(dirname $f)
 	echo $m >> $f

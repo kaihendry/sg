@@ -4,8 +4,11 @@
 	chown -R $USER:www-data /var/sg
 	cd /var/sg
 	/var/sg$ git clone git@github.com:kaihendry/sg.git bin
-	/srv/www$ ln -s /var/sg stats.example.com
 	SG_HOST=$(hostname)
+
+Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv/www`
+
+	/srv/www$ ln -s /var/sg stats.example.com
 
 ## Machine you want to monitor temperature and send it to $SG_HOST
 
@@ -15,7 +18,7 @@ We typically need a destination (`-d`) and a name (`-g`) for the graph.
 
 ## Enabling an example grapher by simply linking them in
 
-	$SG_HOST:/var/sg/35634830e80b2d6371739680000003a4/temp$ ln -s ../../bin/all-png.sh
+	$SG_HOST:/var/sg/x220/temp$ ln -s ../../bin/all-png.sh
 
 Create your own graphing script, and share it? :)
 
@@ -32,13 +35,15 @@ TODO:
 
 You don't need to use SSH. No destination implies local.
 
+You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
+
 ## Running the service on $SG_HOST
 
 	$SG_HOST:/var/sg/bin$ ./sg-service
 	Setting up watches.  Beware: since -r was given, this may take a while!
 	Watches established.
 	Warning: empty y range [67000:67000], adjusting to [66330:67670]
-	Triggered: /var/sg/35634830e80b2d6371739680000003a4/temp/all-png.sh
+	Triggered: /var/sg/x220/temp/all-png.sh
 
 When a CSV file is appended to, the linked in graph scripts are called and
 the graphs they produce are in turn updated.
@@ -47,4 +52,4 @@ the graphs they produce are in turn updated.
 
 	*/5 * * * * ID=temp sg-client -d stats.webconverger.org -g temp /sys/class/thermal/thermal_zone0/temp
 
-<img width=640 height=480 src=http://stats.webconverger.org/35634830e80b2d6371739680000003a4/temp/all.png>
+<img width=640 height=480 src=http://stats.webconverger.org/x220/temp/all.png>
