@@ -18,6 +18,8 @@ We typically need a destination (`-d`) and a name (`-g`) for the graph.
 
 ## Enabling an example grapher by simply linking them in
 
+Directory `c/` for cron client scripts and `g/` for graphing generation scripts
+
 	$SG_HOST:/var/sg/x220/temp$ ln -s ../../bin/g/all-png.sh
 
 Create your own graphing script, and share it? :)
@@ -26,7 +28,7 @@ TODO:
 
 * Graph for daily `$(ls -t *.csv | tail -n1)`
 * Graph for last three days `$(ls -t *.csv | tail -n3)`
-* JSON &rarr; [flot](http://www.flotcharts.org/) / [rickshaw](http://code.shutterstock.com/rickshaw/) / [morris.js](http://www.oesmith.co.uk/morris.js/)
+* JSON &rarr; [flot](http://www.flotcharts.org/) / [rickshaw](http://code.shutterstock.com/rickshaw/) / [morris.js](http://www.oesmith.co.uk/morris.js/) / [d3js](http://d3js.org/)
 * Emulate http://www.geckoboard.com/
 
 ## On $SG_HOST you might want to log the load average
@@ -42,8 +44,7 @@ You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 	$SG_HOST:/var/sg/bin$ ./sg-service
 	Setting up watches.  Beware: since -r was given, this may take a while!
 	Watches established.
-	Warning: empty y range [67000:67000], adjusting to [66330:67670]
-	Triggered: /var/sg/x220/temp/all-png.sh
+	Triggered: /var/sg/x220/m/monitor-png.sh
 
 When a CSV file is appended to, this event is detected by `sg-service` and the
 linked in graph shell scripts are run. The graphs or JSON data they produce are

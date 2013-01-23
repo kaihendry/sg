@@ -1,5 +1,5 @@
 #!/bin/bash
-# */10 * * * * ID=m ~/bin/sg/c/monitor.sh | ~/bin/sg/sg-client -d sg -g m
+# */10 * * * * ID=m ~/bin/sg/c/monitor.sh | ~/bin/sg/sg-client -d sg -g webconverger.com
 
 host=webconverger.com
 ip=208.113.198.182
