@@ -45,8 +45,9 @@ You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 	Warning: empty y range [67000:67000], adjusting to [66330:67670]
 	Triggered: /var/sg/x220/temp/all-png.sh
 
-When a CSV file is appended to, the linked in graph scripts are called and
-the graphs they produce are in turn updated.
+When a CSV file is appended to, this event is detected by `sg-service` and the
+linked in graph shell scripts are run. The graphs or JSON data they produce are
+in turn updated.
 
 ## Example graph that is updated every 5 minutes
 
