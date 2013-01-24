@@ -58,7 +58,7 @@ in turn updated.
 
 	*/10 * * * * ID=m ~/bin/sg/c/monitor.sh -h webconverger.com -i 208.113.198.182 | ~/bin/sg/sg-client -d sg -g webconverger.com
 
-<img width=640 height=480 src=http://stats.webconverger.org/x220/webconverger.com/monitor.png>
+<img src=http://stats.webconverger.org/x220/webconverger.com/monitor.png>
 
 ## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory
 
