@@ -50,7 +50,7 @@ When a CSV file is appended to, this event is detected by `sg-service` and the
 linked in graph shell scripts are run. The graphs or JSON data they produce are
 in turn updated.
 
-## Example graph that is updated every 5 minutes
+## Example graphs
 
 	*/5 * * * * ID=temp sg-client -d stats.webconverger.org -g temp /sys/class/thermal/thermal_zone0/temp
 
@@ -59,6 +59,8 @@ in turn updated.
 	*/10 * * * * ID=m ~/bin/sg/c/monitor.sh -h webconverger.com -i 208.113.198.182 | ~/bin/sg/sg-client -d sg -g webconverger.com
 
 <img src=http://stats.webconverger.org/x220/webconverger.com/monitor.png>
+
+Create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
 
 ## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory
 
