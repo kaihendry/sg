@@ -56,6 +56,10 @@ in turn updated.
 
 <img width=640 height=480 src=http://stats.webconverger.org/x220/temp/all.png>
 
+	*/10 * * * * ID=m ~/bin/sg/c/monitor.sh -h webconverger.com -i 208.113.198.182 | ~/bin/sg/sg-client -d sg -g webconverger.com
+
+<img width=640 height=480 src=http://stats.webconverger.org/x220/webconverger.com/monitor.png>
+
 ## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory
 
 TODO: Somehow limit to just appending and creating directories
@@ -83,3 +87,21 @@ Test with `ssh stats@SG_HOST`
 Crontab root needs to be tweaked like so:
 
 	*/10 * * * * /var/sg/bin/c/temp.sh | /var/sg/bin/sg-client -r / -g temp -d stats@sg.webconverger.com
+
+Make sure your ControlPath is setup, `cat ~/.ssh/config`:
+
+	Host *
+	ControlPath ~/.ssh/master-%r@%h:%p
+	ControlMaster auto
+
+And keep an ssh open to make it **fast**.
+
+	hendry@h2 ~$ ssh -v stats@sg.webconverger.com whoami
+	OpenSSH_6.0p1 Debian-2~artax1, OpenSSL 0.9.8o 01 Jun 2010
+	debug1: Reading configuration data /home/hendry/.ssh/config
+	debug1: /home/hendry/.ssh/config line 1: Applying options for *
+	debug1: Reading configuration data /etc/ssh/ssh_config
+	debug1: /etc/ssh/ssh_config line 19: Applying options for *
+	debug1: auto-mux: Trying existing master
+	debug1: mux_client_request_session: master session id: 3
+	whoami: unknown uid 1006
