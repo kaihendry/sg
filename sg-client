@@ -11,9 +11,10 @@ id=$(hostname)
 # Every graph needs a name
 g="unnamed"
 
-while getopts "g:d:i:" o
+while getopts "r:g:d:i:" o
 do
 	case "$o" in
+	(r) sr="$OPTARG";; # root
 	(g) g="$OPTARG";; # graph name
 	(d) d="$OPTARG";; # destination
 	(i) id="$OPTARG";;# override hostname as client id
