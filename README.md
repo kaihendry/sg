@@ -26,8 +26,8 @@ Create your own graphing script, and share it? :)
 
 TODO:
 
-* Graph for daily `$(ls -t *.csv | tail -n1)`
-* Graph for last three days `$(ls -t *.csv | tail -n3)`
+* Graph for daily `$(ls -t *.csv | head -n1)`
+* Graph for last three days `$(ls -t *.csv | head -n3)`
 * JSON &rarr; [flot](http://www.flotcharts.org/) / [rickshaw](http://code.shutterstock.com/rickshaw/) / [morris.js](http://www.oesmith.co.uk/morris.js/) / [d3js](http://d3js.org/)
 * Emulate http://www.geckoboard.com/
 
