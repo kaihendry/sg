@@ -16,9 +16,9 @@ sent=false
 while getopts "r:g:d:i:" o
 do
 	case "$o" in
-	(r) sr="$OPTARG";; # root
 	(g) g="$OPTARG";; # graph name
-	(d) d="$OPTARG";; # destination
+	(d) d="$OPTARG";; # destination hostname
+	(r) dr="$OPTARG";; # destination root directory
 	(i) id="$OPTARG";;# override hostname as client id
 	esac
 done
@@ -35,38 +35,12 @@ else
 	m="$(date +%s) $(< /dev/stdin)"
 fi
 
-if test "$d" # we are ssh-ing if we have a destination
-then
-
-	# Try use an authenticated socket, it's fast
-	# See: https://github.com/kaihendry/Kai-s--HOME/blob/master/.xinitrc#L9
-	SSH_ENV=$HOME/.ssh/environment
-	test -f ${SSH_ENV} && . ${SSH_ENV} > /dev/null
-
-	test -f "$f" && m="$(< $f)\n$m"
-
-	if echo $m | ssh $d "cat - >> $f" &>/dev/null
-	then
-		sent=true
-	else
-		ssh $d "mkdir -p $(dirname $f)"
-		echo $m | ssh $d "cat - >> $f" &&
-		sent=true
-	fi
-
-fi
-
-if "$sent"
-then
-	rm -f "$f"
-	echo "$m >> $d:$f"
-	exit 0
-fi
-
-# This should not fail once setup
-
 mkdir -p $(dirname $f)
 echo $m >> $f
 test "$?" -eq 0 &&
 echo "$m >> $f"
-# sort uniq
+
+if test "$d"
+then
+	flock -n "/tmp/sg-${id}-${g}" -c "rsync --append -r $sr/$id/$g/ $d:${dr:-$sr}/$id/$g/"
+fi
