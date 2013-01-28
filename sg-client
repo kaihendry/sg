@@ -11,6 +11,8 @@ id=$(hostname)
 # Every graph needs a name
 g="unnamed"
 
+sent=false
+
 while getopts "r:g:d:i:" o
 do
 	case "$o" in
@@ -28,9 +30,9 @@ f="$sr/$id/$g/$(date +%j).csv"
 # MUST be rooted by EPOCH time
 if test -f "$1"
 then
-	m="$(date +%s) $(cat $1)"
+	m="$(date +%s) $(< $1)"
 else
-	m="$(date +%s) $(cat /dev/stdin)"
+	m="$(date +%s) $(< /dev/stdin)"
 fi
 
 if test "$d" # we are ssh-ing if we have a destination
@@ -41,22 +43,30 @@ then
 	SSH_ENV=$HOME/.ssh/environment
 	test -f ${SSH_ENV} && . ${SSH_ENV} > /dev/null
 
-# TODO: if this fails due to network issues we need some suckless way of caching
+	test -f "$f" && m="$(< $f)\n$m"
 
-	if ! echo $m | ssh $d "cat - >> $f" &>/dev/null
+	if echo $m | ssh $d "cat - >> $f" &>/dev/null
 	then
+		sent=true
+	else
 		ssh $d "mkdir -p $(dirname $f)"
 		echo $m | ssh $d "cat - >> $f" &&
-		echo "$m >> $d:$f"
+		sent=true
 	fi
 
-else # we are local
+fi
+
+if "$sent"
+then
+	rm -f "$f"
+	echo "$m >> $d:$f"
+	exit 0
+fi
 
 # This should not fail once setup
 
-	mkdir -p $(dirname $f)
-	echo $m >> $f
-	test "$?" -eq 0 &&
-	echo "$m >> $f"
-
-fi
+mkdir -p $(dirname $f)
+echo $m >> $f
+test "$?" -eq 0 &&
+echo "$m >> $f"
+# sort uniq
