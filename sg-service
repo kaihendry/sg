@@ -16,6 +16,6 @@ do
 	for i in *.sh
 	do
 		sh "$i"
-		echo Triggered: ${dir}${i}
+		echo $(date +%s): ${dir}${i}
 	done
 done < $np

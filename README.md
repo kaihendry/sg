@@ -1,3 +1,10 @@
+# <abbr title="Suckless Graping">sg</abbr> features
+
+* sg-* are  <100 SLOC
+* Uses ssh and rsync to copy things over, use control sockets to make it fast
+* `c/` for example cronjob scripts to get interesting data to plot
+* `g/` for example graphing scripts to plot PNGs or generate JSON
+
 # Setting up "suckless graphing"
 
 	mkdir /var/sg
@@ -64,8 +71,6 @@ Create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g
 
 ## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory
 
-TODO: Somehow limit to just appending and creating directories
-
 $SG_HOST's `/etc/passwd` entry:
 
 	stats:x:1006:1006::/home/stats:/bin/sh
@@ -90,6 +95,8 @@ Crontab root needs to be tweaked like so:
 
 	*/10 * * * * /var/sg/bin/c/temp.sh | /var/sg/bin/sg-client -r / -g temp -d stats@sg.webconverger.com
 
+Notice the `-r /` for the chroot path and the user@.
+
 Make sure your ControlPath is setup, `cat ~/.ssh/config`:
 
 	Host *
@@ -98,12 +105,6 @@ Make sure your ControlPath is setup, `cat ~/.ssh/config`:
 
 And keep an ssh open to make it **fast**.
 
-	hendry@h2 ~$ ssh -v stats@sg.webconverger.com whoami
-	OpenSSH_6.0p1 Debian-2~artax1, OpenSSL 0.9.8o 01 Jun 2010
-	debug1: Reading configuration data /home/hendry/.ssh/config
-	debug1: /home/hendry/.ssh/config line 1: Applying options for *
-	debug1: Reading configuration data /etc/ssh/ssh_config
-	debug1: /etc/ssh/ssh_config line 19: Applying options for *
-	debug1: auto-mux: Trying existing master
-	debug1: mux_client_request_session: master session id: 3
-	whoami: unknown uid 1006
+	hendry@h2 ~$ rsync -e 'ssh -v' stats@sg.webconverger.com
+
+To setup rsync, follow this [rsync ChrootDirectory guide](http://en.positon.org/post/SFTP-chroot-rsync)
