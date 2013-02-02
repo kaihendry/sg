@@ -1,5 +1,6 @@
-# <abbr title="Suckless Graping">sg</abbr> features
+# <abbr title="Suckless Graphing">sg</abbr> features
 
+* Designed for a [time series](http://en.wikipedia.org/wiki/Time_series)
 * sg-* are  <100 SLOC
 * Uses ssh and rsync to copy things over, use control sockets to make it fast
 * `c/` for example cronjob scripts to get interesting data to plot
@@ -21,7 +22,8 @@ Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv
 
 	sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
 
-We typically need a destination (`-d`) and a name (`-g`) for the graph.
+We typically need a destination (`-d`) and a name (`-g`) for the graph. Use
+cron to submit datapoints at uniform time intervals.
 
 ## Enabling an example grapher by simply linking them in
 
