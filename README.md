@@ -35,9 +35,7 @@ Create your own graphing script, and share it? :)
 
 TODO:
 
-* Graph for daily `$(ls -t *.csv | head -n1)`
-* Graph for last three days `$(ls -t *.csv | head -n3)`
-* JSON &rarr; [flot](http://www.flotcharts.org/) / [rickshaw](http://code.shutterstock.com/rickshaw/) / [morris.js](http://www.oesmith.co.uk/morris.js/) / [d3js](http://d3js.org/)
+* Figure out how to iframe different graphs in a nicer way
 * Emulate http://www.geckoboard.com/
 
 ## On $SG_HOST you might want to log the load average
@@ -68,6 +66,8 @@ in turn updated.
 	*/10 * * * * ID=m ~/bin/sg/c/monitor.sh -h webconverger.com -i 208.113.198.182 | ~/bin/sg/sg-client -d sg -g webconverger.com
 
 <img src=http://stats.webconverger.org/x220/webconverger.com/monitor.png>
+
+[Multiple graphs in one page using iframes example](http://stats.webconverger.org/x220/temp/iframe.html)
 
 Create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
 
