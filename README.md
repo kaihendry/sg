@@ -25,7 +25,7 @@ Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv
 We typically need a destination (`-d`) and a name (`-g`) for the graph. Use
 cron to submit datapoints at uniform time intervals.
 
-You don't need to use SSH. No destination implies local.
+You don't need to use SSH. No destination implies local `/var/sg`, where data is always collected in any case.
 
 You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 
@@ -47,7 +47,10 @@ TODO:
 	$SG_HOST:/var/sg/bin$ ./sg-service
 	Setting up watches.  Beware: since -r was given, this may take a while!
 	Watches established.
-	Triggered: /var/sg/x220/m/monitor-png.sh
+	1359953560: /var/sg/x220/temp/all-png.sh
+	1359953560: /var/sg/x220/temp/flot.sh
+	1359953560: /var/sg/x220/temp/google.sh
+	1359953560: /var/sg/x220/temp/morris.sh
 
 When a CSV file is appended to, this event is detected by `sg-service` and the
 linked in graph shell scripts are run. The graphs they produce are in turn
@@ -59,13 +62,13 @@ updated.
 
 <img width=640 height=480 src=http://stats.webconverger.org/x220/temp/all.png>
 
-	*/10 * * * * ID=m ~/bin/sg/c/monitor.sh -h webconverger.com -i 208.113.198.182 | ~/bin/sg/sg-client -d sg -g webconverger.com
+	*/10 * * * * /var/sg/bin/c/monitor.sh -h webconverger.com -i 208.113.198.182 | /var/sg/bin/sg-client -r / -d stats@sg.webconverger.com -g webconverger.com
 
-<img src=http://stats.webconverger.org/x220/webconverger.com/monitor.png>
+<img src=http://stats.webconverger.org/h2/webconverger.com/monitor.png>
 
 Please create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
 
-## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory
+## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory (optional)
 
 $SG_HOST's `/etc/passwd` entry:
 
