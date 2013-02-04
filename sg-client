@@ -11,8 +11,6 @@ id=$(hostname)
 # Every graph needs a name
 g="unnamed"
 
-sent=false
-
 while getopts "r:g:d:i:" o
 do
 	case "$o" in

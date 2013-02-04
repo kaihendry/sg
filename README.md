@@ -4,7 +4,7 @@
 * sg-* are  <100 SLOC
 * Uses ssh and rsync to copy things over, use control sockets to make it fast
 * `c/` for example cronjob scripts to get interesting data to plot
-* `g/` for example graphing scripts to plot PNGs or generate JSON
+* `g/` for example graphing scripts to plot PNGs or Web graphics
 
 # Setting up "suckless graphing"
 
@@ -25,6 +25,10 @@ Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv
 We typically need a destination (`-d`) and a name (`-g`) for the graph. Use
 cron to submit datapoints at uniform time intervals.
 
+You don't need to use SSH. No destination implies local.
+
+You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
+
 ## Enabling an example grapher by simply linking them in
 
 Directory `c/` for cron client scripts and `g/` for graphing generation scripts
@@ -35,16 +39,8 @@ Create your own graphing script, and share it? :)
 
 TODO:
 
-* Figure out how to iframe different graphs in a nicer way
+* Figure out how to iframe different graphs in a nicer way than [this](http://stats.webconverger.org/x220/temp/iframe.html)
 * Emulate http://www.geckoboard.com/
-
-## On $SG_HOST you might want to log the load average
-
-	cat /proc/loadavg | sg-client -g load
-
-You don't need to use SSH. No destination implies local.
-
-You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 
 ## Running the service on $SG_HOST
 
@@ -54,8 +50,8 @@ You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 	Triggered: /var/sg/x220/m/monitor-png.sh
 
 When a CSV file is appended to, this event is detected by `sg-service` and the
-linked in graph shell scripts are run. The graphs or JSON data they produce are
-in turn updated.
+linked in graph shell scripts are run. The graphs they produce are in turn
+updated.
 
 ## Example graphs
 
@@ -67,9 +63,7 @@ in turn updated.
 
 <img src=http://stats.webconverger.org/x220/webconverger.com/monitor.png>
 
-[Multiple graphs in one page using iframes example](http://stats.webconverger.org/x220/temp/iframe.html)
-
-Create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
+Please create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
 
 ## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory
 
@@ -82,7 +76,7 @@ Append keys to `/home/stats/.ssh/authorized_keys`
 in `/etc/ssh/sshd_config`:
 
 	Match user stats
-	  ChrootDirectory /var/sg
+	ChrootDirectory /var/sg
 
 You will see `fatal: bad ownership or modes for chroot directory "/var/sg"`
 unless it's owned by root. You can alter subdirectory permissions to whatever you want.
@@ -105,7 +99,7 @@ Make sure your ControlPath is setup, `cat ~/.ssh/config`:
 	ControlPath ~/.ssh/master-%r@%h:%p
 	ControlMaster auto
 
-And keep an ssh open to make it **fast**.
+And keep an ssh connection open to make it **fast**.
 
 	hendry@h2 ~$ rsync -e 'ssh -v' stats@sg.webconverger.com
 
