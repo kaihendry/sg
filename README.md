@@ -2,7 +2,7 @@
 
 * Designed for a [time series](http://en.wikipedia.org/wiki/Time_series)
 * sg-* are  <100 SLOC
-* Uses ssh and rsync to copy things over, use control sockets to make it fast
+* Uses rsync to copy things over, keep a SSH control socket open to make it faster
 * `c/` for example cronjob scripts to get interesting data to plot
 * `g/` for example graphing scripts to plot PNGs or Web graphics
 
@@ -25,7 +25,7 @@ Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv
 We typically need a destination (`-d`) and a name (`-g`) for the graph. Use
 cron to submit datapoints at uniform time intervals.
 
-You don't need to use SSH. No destination implies local `/var/sg`, where data is always collected in any case.
+You don't need to use SSH. No destination implies local `/var/sg`, where data is collected in any case.
 
 You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 
