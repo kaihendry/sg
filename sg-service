@@ -2,8 +2,8 @@
 
 sr=/var/sg # sg's root
 
-np=$(mktemp -u)
-mkfifo $np
+np="$(mktemp -d)/sg-$$"
+mkfifo $np || exit
 
 inotifywait -r -m -e CLOSE_WRITE $sr > $np & ipid=$!
 
