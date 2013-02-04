@@ -2,20 +2,20 @@
 
 sr=/var/sg # sg's root
 
-np=$(mktemp -u)
-mkfifo $np
+np="$(mktemp -d)/sg-$$"
+mkfifo "$np" || exit
 
-inotifywait -r -m -e CLOSE_WRITE $sr > $np & ipid=$!
+inotifywait -r -m -e CLOSE_WRITE "$sr" > "$np" & ipid=$!
 
 trap "kill $ipid; rm -f $np" EXIT
 
-while read dir event filename
+while read -r dir event filename
 do
 	if test "${filename##*.}" != "csv"; then continue; fi
-	cd $dir
+	cd "$dir"
 	for i in *.sh
 	do
 		sh "$i"
 		echo $(date +%s): ${dir}${i}
 	done
-done < $np
+done < "$np"
