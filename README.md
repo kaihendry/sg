@@ -1,3 +1,11 @@
+# <abbr title="Suckless Graphing">sg</abbr> features
+
+* Designed for a [time series](http://en.wikipedia.org/wiki/Time_series)
+* sg-* are  <100 SLOC
+* Uses rsync to copy things over, keep a SSH control socket open to make it faster
+* `c/` for example cronjob scripts to get interesting data to plot
+* `g/` for example graphing scripts to plot PNGs or Web graphics
+
 # Setting up "suckless graphing"
 
 	mkdir /var/sg
@@ -14,7 +22,12 @@ Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv
 
 	sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
 
-We typically need a destination (`-d`) and a name (`-g`) for the graph.
+We typically need a destination (`-d`) and a name (`-g`) for the graph. Use
+cron to submit datapoints at uniform time intervals.
+
+You don't need to use SSH. No destination implies local `/var/sg`, where data is collected in any case.
+
+You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 
 ## Enabling an example grapher by simply linking them in
 
@@ -26,29 +39,22 @@ Create your own graphing script, and share it? :)
 
 TODO:
 
-* Graph for daily `$(ls -t *.csv | head -n1)`
-* Graph for last three days `$(ls -t *.csv | head -n3)`
-* JSON &rarr; [flot](http://www.flotcharts.org/) / [rickshaw](http://code.shutterstock.com/rickshaw/) / [morris.js](http://www.oesmith.co.uk/morris.js/) / [d3js](http://d3js.org/)
+* Figure out how to iframe different graphs in a nicer way than [this](http://stats.webconverger.org/x220/temp/iframe.html)
 * Emulate http://www.geckoboard.com/
-
-## On $SG_HOST you might want to log the load average
-
-	cat /proc/loadavg | sg-client -g load
-
-You don't need to use SSH. No destination implies local.
-
-You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 
 ## Running the service on $SG_HOST
 
 	$SG_HOST:/var/sg/bin$ ./sg-service
 	Setting up watches.  Beware: since -r was given, this may take a while!
 	Watches established.
-	Triggered: /var/sg/x220/m/monitor-png.sh
+	1359953560: /var/sg/x220/temp/all-png.sh
+	1359953560: /var/sg/x220/temp/flot.sh
+	1359953560: /var/sg/x220/temp/google.sh
+	1359953560: /var/sg/x220/temp/morris.sh
 
 When a CSV file is appended to, this event is detected by `sg-service` and the
-linked in graph shell scripts are run. The graphs or JSON data they produce are
-in turn updated.
+linked in graph shell scripts are run. The graphs they produce are in turn
+updated.
 
 ## Example graphs
 
@@ -56,15 +62,13 @@ in turn updated.
 
 <img width=640 height=480 src=http://stats.webconverger.org/x220/temp/all.png>
 
-	*/10 * * * * ID=m ~/bin/sg/c/monitor.sh -h webconverger.com -i 208.113.198.182 | ~/bin/sg/sg-client -d sg -g webconverger.com
+	*/10 * * * * /var/sg/bin/c/monitor.sh -h webconverger.com -i 208.113.198.182 | /var/sg/bin/sg-client -r / -d stats@sg.webconverger.com -g webconverger.com
 
-<img src=http://stats.webconverger.org/x220/webconverger.com/monitor.png>
+<img src=http://stats.webconverger.org/h2/webconverger.com/monitor.png>
 
-Create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
+Please create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
 
-## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory
-
-TODO: Somehow limit to just appending and creating directories
+## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory (optional)
 
 $SG_HOST's `/etc/passwd` entry:
 
@@ -75,7 +79,7 @@ Append keys to `/home/stats/.ssh/authorized_keys`
 in `/etc/ssh/sshd_config`:
 
 	Match user stats
-	  ChrootDirectory /var/sg
+	ChrootDirectory /var/sg
 
 You will see `fatal: bad ownership or modes for chroot directory "/var/sg"`
 unless it's owned by root. You can alter subdirectory permissions to whatever you want.
@@ -90,20 +94,16 @@ Crontab root needs to be tweaked like so:
 
 	*/10 * * * * /var/sg/bin/c/temp.sh | /var/sg/bin/sg-client -r / -g temp -d stats@sg.webconverger.com
 
+Notice the `-r /` for the chroot path and the user@.
+
 Make sure your ControlPath is setup, `cat ~/.ssh/config`:
 
 	Host *
 	ControlPath ~/.ssh/master-%r@%h:%p
 	ControlMaster auto
 
-And keep an ssh open to make it **fast**.
+And keep an ssh connection open to make it **fast**.
 
-	hendry@h2 ~$ ssh -v stats@sg.webconverger.com whoami
-	OpenSSH_6.0p1 Debian-2~artax1, OpenSSL 0.9.8o 01 Jun 2010
-	debug1: Reading configuration data /home/hendry/.ssh/config
-	debug1: /home/hendry/.ssh/config line 1: Applying options for *
-	debug1: Reading configuration data /etc/ssh/ssh_config
-	debug1: /etc/ssh/ssh_config line 19: Applying options for *
-	debug1: auto-mux: Trying existing master
-	debug1: mux_client_request_session: master session id: 3
-	whoami: unknown uid 1006
+	hendry@h2 ~$ rsync -e 'ssh -v' stats@sg.webconverger.com
+
+To setup rsync, follow this [rsync ChrootDirectory guide](http://en.positon.org/post/SFTP-chroot-rsync)
