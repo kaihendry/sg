@@ -34,8 +34,7 @@ else
 fi
 
 mkdir -p "$(dirname "$f")"
-echo $m >> "$f"
-test "$?" -eq 0 &&
+echo $m >> "$f" || exit
 
 if test "$d"
 then
