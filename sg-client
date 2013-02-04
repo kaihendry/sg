@@ -42,5 +42,5 @@ echo "$m >> $f"
 
 if test "$d"
 then
-	flock -n "/tmp/sg-${id}-${g}" -c "rsync --append -r $sr/$id/$g/ $d:${dr:-$sr}/$id/$g/"
+	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --append -r $sr/$id/$g/ $d:${dr:-$sr}/$id/$g/"
 fi
