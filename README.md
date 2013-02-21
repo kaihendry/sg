@@ -60,7 +60,7 @@ updated.
 
 	*/5 * * * * ID=temp sg-client -d stats.webconverger.org -g temp /sys/class/thermal/thermal_zone0/temp
 
-<img width=640 height=480 src=http://stats.webconverger.org/x220/temp/all.png>
+<img width=640 height=480 src=http://stats.webconverger.org/h2/temp/all.png>
 
 	*/10 * * * * /var/sg/bin/c/monitor.sh -h webconverger.com -i 208.113.198.182 | /var/sg/bin/sg-client -r / -d stats@sg.webconverger.com -g webconverger.com
 

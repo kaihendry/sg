@@ -23,7 +23,7 @@ done
 shift $((OPTIND - 1))
 
 # Crucial hierachy e.g. /var/sg/machine-id/temperature/022.csv, 022 is the day of the year
-f="$sr/$id/$g/$(date +%j).csv"
+f="$sr/$id/$g/$(date -u +%j).csv"
 
 # MUST be rooted by EPOCH time
 if test -f "$1"
@@ -33,9 +33,8 @@ else
 	m="$(date +%s) $(< /dev/stdin)"
 fi
 
-mkdir -p $(dirname $f)
-echo $m >> $f
-test "$?" -eq 0 &&
+mkdir -p "$(dirname "$f")"
+echo $m >> "$f" || exit
 
 if test "$d"
 then
