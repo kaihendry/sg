@@ -14,3 +14,5 @@ set xtics 9676800
 set timefmt "%s"
 plot '$t' using 1:2 title "ICMP" with lines,     '$t' using 1:3 title "HTTP" with lines,     '$t' using 1:4 title "DNS" with lines,     '$t' using 1:5 title "SMTP" with lines
 END
+
+rm -f $t
