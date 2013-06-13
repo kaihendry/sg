@@ -14,10 +14,10 @@ g="unnamed"
 while getopts "r:g:d:i:" o
 do
 	case "$o" in
-	(g) g="$OPTARG";; # graph name
-	(d) d="$OPTARG";; # destination hostname
+	(g) g="$OPTARG";;  # graph name
+	(d) d="$OPTARG";;  # destination hostname
 	(r) dr="$OPTARG";; # destination root directory
-	(i) id="$OPTARG";;# override hostname as client id
+	(i) id="$OPTARG";; # override hostname as client id
 	esac
 done
 shift $((OPTIND - 1))
