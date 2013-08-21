@@ -17,8 +17,8 @@ set output "$o"
 set title "Laptop temperature"
 set xdata time
 set ylabel "Temperature (C)"
-set xlabel "\nDate\nTime"
-set timefmt "%d/%m/%y\t%H%M"
+set xlabel "Time"
+set timefmt "%H%M"
 set grid
 set key outside
 set timefmt "%s"

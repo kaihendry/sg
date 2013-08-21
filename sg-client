@@ -18,10 +18,10 @@ g="unnamed"
 while getopts "r:g:d:i:" o
 do
 	case "$o" in
-	(g) g="$OPTARG";; # graph name
-	(d) d="$OPTARG";; # destination hostname
+	(g) g="$OPTARG";;  # graph name
+	(d) d="$OPTARG";;  # destination hostname
 	(r) dr="$OPTARG";; # destination root directory
-	(i) id="$OPTARG";;# override hostname as client id
+	(i) id="$OPTARG";; # override hostname as client id
 	esac
 done
 shift $((OPTIND - 1))
@@ -42,5 +42,5 @@ echo $m >> "$f" || exit
 
 if test "$d"
 then
-	flock -n "/tmp/sg-${id}-${g}" -c "rsync --append -r $sr/$id/$g/*.csv $d:${dr:-$sr}/$id/$g/"
+	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --append -r $sr/$id/$g/*.csv $d:${dr:-$sr}/$id/$g/"
 fi
