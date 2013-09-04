@@ -29,14 +29,11 @@ You don't need to use SSH. No destination implies local `/var/sg`, where data is
 
 You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 
-## Enabling an example grapher by simply linking them in
-
-Directory `c/` for example cron client scripts and `g/` for graphing generation scripts
+## Enable an example grapher by simply linking it in
 
 	$SG_HOST:/var/sg/x220/temp$ ln -s ../../bin/g/all-png.sh
 
-Please create your own graphing script, and share it? :)
-
+Please create your own [graphing script](g/), and share it? :)
 
 ## Running the service on $SG_HOST
 
@@ -56,6 +53,8 @@ There is also a [systemd sg service file](sg.service).
 
 ## Example graphs
 
+### Plotting a thermometer attached to a Raspberry PI
+
 Running as a cronjob every 5 minutes on a [Rpi with a thermometer](http://www.flickr.com/photos/hendry/9649125655/):
 
 	*/5 * * * * ~/temp/a.out | ~/bin/sg/sg-client -r / -d stats@sg.webconverger.com -g temp
@@ -69,13 +68,13 @@ See the [graph directory](/g) for the shell scripts that generate these outputs:
 
 This assumes I have a ssh connection open with the destination host `sg`:
 
+### Plotting the temperature of my laptop as well as the kernel version
+
 	*/5 * * * * echo $(cat /sys/class/thermal/thermal_zone0/temp) $(uname -r) | ~/bin/sg/sg-client -d sg -g temp
 
 <img width=640 height=480 src=http://stats.webconverger.org/x220/temp/latest.png>
 
-Please create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
-
-## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory (optional)
+## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory (tricky & optional)
 
 $SG_HOST's `/etc/passwd` entry:
 
