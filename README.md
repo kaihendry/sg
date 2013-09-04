@@ -5,6 +5,7 @@
 * Uses rsync to copy things over, network tolerant, keep a SSH control socket open to make it faster
 * [c/](c/) for example cronjob scripts to get interesting data to plot
 * [g/](g/) for example graphing scripts to plot PNGs or Web graphics
+* By default stores only one year of data
 
 # Setting up "suckless graphing"
 
@@ -16,42 +17,22 @@
 
 Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv/www`
 
-	/srv/www$ ln -s /var/sg stats.example.com
+## Running sg-service that invokes the graphers on $SG_HOST
 
-## Machine you want to monitor temperature and send it to $SG_HOST
+Graphing scripts are linked in `/var/sg/$hostname_of_source/$graph_name# ln -s ../../bin/g/all-png.sh`.
 
-	sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
-
-We typically need a destination (`-d`) and a name (`-g`) for the graph. Use
-cron to submit datapoints at uniform time intervals.
-
-You don't need to use SSH. No destination implies local `/var/sg`, where data is collected in any case.
-
-You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
-
-## Enable an example grapher by simply linking it in
-
-	$SG_HOST:/var/sg/x220/temp$ ln -s ../../bin/g/all-png.sh
-
-Please create your own [graphing script](g/), and share it? :)
-
-## Running the service on $SG_HOST
+When `sg-client` appends to the CSV file named after the day of the year, this
+event is detected by `sg-service` and the linked in graph shell scripts are
+run. The graphs they produce are in turn updated.
 
 	$SG_HOST:/var/sg/bin$ ./sg-service
 	Setting up watches.  Beware: since -r was given, this may take a while!
 	Watches established.
 	1359953560: /var/sg/x220/temp/all-png.sh
-	1359953560: /var/sg/x220/temp/flot.sh
-	1359953560: /var/sg/x220/temp/google.sh
-	1359953560: /var/sg/x220/temp/morris.sh
-
-When `sg-client` writes to the CSV file named after the day of the year is appended
-to, this event is detected by `sg-service` and the linked in graph shell
-scripts are run. The graphs they produce are in turn updated.
 
 There is also a [systemd sg service file](sg.service).
 
-## Example graphs
+## Example graphs using sg-client
 
 ### Plotting a thermometer attached to a Raspberry PI
 
