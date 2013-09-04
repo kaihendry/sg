@@ -3,8 +3,8 @@
 * Designed for a [time series](http://en.wikipedia.org/wiki/Time_series)
 * sg-* are  <100 SLOC
 * Uses rsync to copy things over, keep a SSH control socket open to make it faster
-* `c/` for example cronjob scripts to get interesting data to plot
-* `g/` for example graphing scripts to plot PNGs or Web graphics
+* [c/](c/) for example cronjob scripts to get interesting data to plot
+* [g/](g/) for example graphing scripts to plot PNGs or Web graphics
 
 # Setting up "suckless graphing"
 
@@ -31,16 +31,12 @@ You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
 
 ## Enabling an example grapher by simply linking them in
 
-Directory `c/` for cron client scripts and `g/` for graphing generation scripts
+Directory `c/` for example cron client scripts and `g/` for graphing generation scripts
 
 	$SG_HOST:/var/sg/x220/temp$ ln -s ../../bin/g/all-png.sh
 
-Create your own graphing script, and share it? :)
+Please create your own graphing script, and share it? :)
 
-TODO:
-
-* Figure out how to iframe different graphs in a nicer way than [this](http://stats.webconverger.org/x220/temp/iframe.html)
-* Emulate http://www.geckoboard.com/
 
 ## Running the service on $SG_HOST
 
@@ -52,19 +48,30 @@ TODO:
 	1359953560: /var/sg/x220/temp/google.sh
 	1359953560: /var/sg/x220/temp/morris.sh
 
-When a CSV file is appended to, this event is detected by `sg-service` and the
-linked in graph shell scripts are run. The graphs they produce are in turn
-updated.
+When `sg-client` writes to the CSV file named after the day of the year is appended
+to, this event is detected by `sg-service` and the linked in graph shell
+scripts are run. The graphs they produce are in turn updated.
+
+There is also a [systemd sg service file](sg.service).
 
 ## Example graphs
 
-	*/5 * * * * ID=temp sg-client -d stats.webconverger.org -g temp /sys/class/thermal/thermal_zone0/temp
+Running as a cronjob every 5 minutes on a [Rpi with a thermometer](http://www.flickr.com/photos/hendry/9649125655/):
 
-<img width=640 height=480 src=http://stats.webconverger.org/h2/temp/all.png>
+	*/5 * * * * ~/temp/a.out | ~/bin/sg/sg-client -r / -d stats@sg.webconverger.com -g temp
 
-	*/10 * * * * /var/sg/bin/c/monitor.sh -h webconverger.com -i 208.113.198.182 | /var/sg/bin/sg-client -r / -d stats@sg.webconverger.com -g webconverger.com
+See the [graph directory](/g) for the shell scripts that generate these outputs:
 
-<img src=http://stats.webconverger.org/h2/webconverger.com/monitor.png>
+* http://stats.webconverger.org/pihsg/temp/all.png
+* http://stats.webconverger.org/pihsg/temp/google.html
+* http://stats.webconverger.org/pihsg/temp/morris.html
+* http://stats.webconverger.org/pihsg/temp/flot.html
+
+This assumes I have a ssh connection open with the destination host `sg`:
+
+	*/5 * * * * echo $(cat /sys/class/thermal/thermal_zone0/temp) $(uname -r) | ~/bin/sg/sg-client -d sg -g temp
+
+<img width=640 height=480 src=http://stats.webconverger.org/x220/temp/latest.png>
 
 Please create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
 

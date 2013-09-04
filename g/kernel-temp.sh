@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://github.com/kaihendry/sg/
 
 # echo $(cat /sys/class/thermal/thermal_zone0/temp) $(uname -r) | ~/bin/sg/sg-client -d sg -g temp
 
@@ -9,12 +10,11 @@
 
 lastcsv=$(ls -t *.csv | head -n1)
 o="$(basename $lastcsv .csv).png"
-echo $o
 
 cat << END | gnuplot
 set term pngcairo size 1366,768
 set output "$o"
-set title "Laptop temperature"
+set title "Suckless Graphs Laptop temperature"
 set xdata time
 set ylabel "Temperature (C)"
 set xlabel "Time"
@@ -27,3 +27,6 @@ archs = "`cut -d' ' -f3 $lastcsv | sort -u | tr '\n' ' '`"
 plot for [arch in archs] '$lastcsv' using 1:((strcol(3) eq arch) ? (\$2/1000):1/0) title arch with linespoints
 END
 
+# Clean up if we have a dud
+test -s $o || rm $o
+ln -sf $o latest.png

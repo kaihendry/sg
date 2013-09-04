@@ -1,0 +1,9 @@
+[Unit]
+Description=Suckless graphs
+After=network.target
+
+[Service]
+ExecStart=/var/sg/bin/sg-service
+
+[Install]
+WantedBy=multi-user.target
