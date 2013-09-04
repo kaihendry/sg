@@ -2,7 +2,7 @@
 
 * Designed for a [time series](http://en.wikipedia.org/wiki/Time_series)
 * sg-* are  <100 SLOC
-* Uses rsync to copy things over, keep a SSH control socket open to make it faster
+* Uses rsync to copy things over, network tolerant, keep a SSH control socket open to make it faster
 * [c/](c/) for example cronjob scripts to get interesting data to plot
 * [g/](g/) for example graphing scripts to plot PNGs or Web graphics
 
@@ -110,7 +110,5 @@ Make sure your ControlPath is setup, `cat ~/.ssh/config`:
 	ControlMaster auto
 
 And keep an ssh connection open to make it **fast**.
-
-	hendry@h2 ~$ rsync -e 'ssh -v' stats@sg.webconverger.com
 
 To setup rsync, follow this [rsync ChrootDirectory guide](http://en.positon.org/post/SFTP-chroot-rsync)
