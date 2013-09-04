@@ -1,3 +1,8 @@
+Suckless Graphs does two things:
+
+1. Helps collect data you want, from any machine via ssh, in a CSV format anchored by epoch time
+2. Offers scripts to graph that data
+
 # <abbr title="Suckless Graphing">sg</abbr> features
 
 * Designed for a [time series](http://en.wikipedia.org/wiki/Time_series)
