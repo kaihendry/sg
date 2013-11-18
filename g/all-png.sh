@@ -15,7 +15,12 @@ set pointintervalbox 3
 plot '-' using 1:2 with linespoints pt 7 lw 2 pi -1 ps 1.5
 END
 
-cat *.csv >> $t
-cat $t | gnuplot
+cat *.csv | while read epoch val
+do
+	test "$val" || continue
+	test "$epoch" -gt 100000 || continue
+	echo "$epoch" "$val"
+done >> $t
 
+cat $t | gnuplot
 rm -f $t
