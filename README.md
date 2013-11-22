@@ -1,10 +1,16 @@
+Suckless Graphs does two things:
+
+1. Helps collect data you want, from any machine via ssh, in a CSV format anchored by epoch time
+2. Offers scripts to graph that data
+
 # <abbr title="Suckless Graphing">sg</abbr> features
 
 * Designed for a [time series](http://en.wikipedia.org/wiki/Time_series)
 * sg-* are  <100 SLOC
 * Uses rsync to copy things over, network tolerant, keep a SSH control socket open to make it faster
-* `c/` for example cronjob scripts to get interesting data to plot
-* `g/` for example graphing scripts to plot PNGs or Web graphics
+* [c/](c/) for example cronjob scripts to get interesting data to plot
+* [g/](g/) for example graphing scripts to plot PNGs or Web graphics
+* By default stores only one year of data
 
 # Setting up "suckless graphing"
 
@@ -16,59 +22,45 @@
 
 Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv/www`
 
-	/srv/www$ ln -s /var/sg stats.example.com
+## Running sg-service that invokes the graphers on $SG_HOST
 
-## Machine you want to monitor temperature and send it to $SG_HOST
+Graphing scripts are linked in `/var/sg/$hostname_of_source/$graph_name# ln -s ../../bin/g/all-png.sh`.
 
-	sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
-
-We typically need a destination (`-d`) and a name (`-g`) for the graph. Use
-cron to submit datapoints at uniform time intervals.
-
-You don't need to use SSH. No destination implies local `/var/sg`, where data is collected in any case.
-
-You can use `/dev/stdin` instead of supplying `sg-client` a file to read.
-
-## Enabling an example grapher by simply linking them in
-
-Directory `c/` for cron client scripts and `g/` for graphing generation scripts
-
-	$SG_HOST:/var/sg/x220/temp$ ln -s ../../bin/g/all-png.sh
-
-Create your own graphing script, and share it? :)
-
-TODO:
-
-* Figure out how to iframe different graphs in a nicer way than [this](http://stats.webconverger.org/x220/temp/iframe.html)
-* Emulate http://www.geckoboard.com/
-
-## Running the service on $SG_HOST
+When `sg-client` appends to the CSV file named after the day of the year, this
+event is detected by `sg-service` and the linked in graph shell scripts are
+run. The graphs they produce are in turn updated.
 
 	$SG_HOST:/var/sg/bin$ ./sg-service
 	Setting up watches.  Beware: since -r was given, this may take a while!
 	Watches established.
 	1359953560: /var/sg/x220/temp/all-png.sh
-	1359953560: /var/sg/x220/temp/flot.sh
-	1359953560: /var/sg/x220/temp/google.sh
-	1359953560: /var/sg/x220/temp/morris.sh
 
-When a CSV file is appended to, this event is detected by `sg-service` and the
-linked in graph shell scripts are run. The graphs they produce are in turn
-updated.
+There is also a [systemd sg service file](sg.service).
 
-## Example graphs
+## Example graphs using sg-client
 
-	*/5 * * * * ID=temp sg-client -d stats.webconverger.org -g temp /sys/class/thermal/thermal_zone0/temp
+### Plotting a thermometer attached to a Raspberry PI
 
-<img width=640 height=480 src=http://stats.webconverger.org/h2/temp/all.png>
+Running as a cronjob every 5 minutes on a [Rpi with a thermometer](http://www.flickr.com/photos/hendry/9649125655/):
 
-	*/10 * * * * /var/sg/bin/c/monitor.sh -h webconverger.com -i 208.113.198.182 | /var/sg/bin/sg-client -r / -d stats@sg.webconverger.com -g webconverger.com
+	*/5 * * * * ~/temp/a.out | ~/bin/sg/sg-client -r / -d stats@sg.webconverger.com -g temp
 
-<img src=http://stats.webconverger.org/h2/webconverger.com/monitor.png>
+See the [graph directory](/g) for the shell scripts that generate these outputs:
 
-Please create your own [graphing scripts](https://github.com/kaihendry/sg/tree/master/g) and share them!
+* http://stats.webconverger.org/pihsg/temp/all.png
+* http://stats.webconverger.org/pihsg/temp/google.html
+* http://stats.webconverger.org/pihsg/temp/morris.html
+* http://stats.webconverger.org/pihsg/temp/flot.html
 
-## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory (optional)
+This assumes I have a ssh connection open with the destination host `sg`:
+
+### Plotting the temperature of my laptop as well as the kernel version
+
+	*/5 * * * * echo $(cat /sys/class/thermal/thermal_zone0/temp) $(uname -r) | ~/bin/sg/sg-client -d sg -g temp
+
+<img width=640 height=480 src=http://stats.webconverger.org/x220/temp/latest.png>
+
+## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory (tricky & optional)
 
 $SG_HOST's `/etc/passwd` entry:
 

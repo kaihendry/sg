@@ -1,10 +1,19 @@
-]);
-        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-        chart.draw(data);
+
+         dashboard.bind(control, chart);
+         dashboard.draw(data);
       }
+
+
+      google.setOnLoadCallback(drawVisualization);
     </script>
   </head>
   <body>
-    <div id='chart_div' style='width: 700px; height: 240px;'></div>
+    <div id="dashboard">
+        <div id="chart" style='width: 915px; height: 300px;'></div>
+        <div id="control" style='width: 915px; height: 50px;'></div>
+    </div>
+
+<p>Drawn by the Google grapher of <a href="https://github.com/kaihendry/sg/">Suckless Graphs</a></p>
+
   </body>
 </html>

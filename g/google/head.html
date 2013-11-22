@@ -1,11 +1,46 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <script src='http://www.google.com/jsapi'></script>
-    <script>
-      google.load('visualization', '1', {'packages':['annotatedtimeline']});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('date', 'Date');
-        data.addColumn('number', 'temp');
-        data.addRows([
+<head>
+<meta charset="utf-8" />
+    <title>
+     Suckless Graphs Google Visualization
+    </title>
+    <script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1.1', {packages: ['corechart', 'controls']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        var dashboard = new google.visualization.Dashboard(
+             document.getElementById('dashboard'));
+
+         var control = new google.visualization.ControlWrapper({
+           'controlType': 'ChartRangeFilter',
+           'containerId': 'control',
+           'options': {
+             // Filter by the date axis.
+             'filterColumnIndex': 0,
+             'ui': {
+               'chartType': 'LineChart',
+               'chartOptions': {
+                 'chartArea': {'width': '90%'},
+                 'hAxis': {'baselineColor': 'none'}
+               },
+           }}
+         });
+
+         var chart = new google.visualization.ChartWrapper({
+           'chartType': 'LineChart',
+           'containerId': 'chart',
+           'options': {
+             // Use the same chart area width as the control for axis alignment.
+             'chartArea': {'height': '80%', 'width': '90%'},
+             'hAxis': {'slantedText': false},
+             'legend': {'position': 'none'}
+           },
+
+         });
+
+         var data = new google.visualization.DataTable();
+         data.addColumn('datetime', 'Date');
+         data.addColumn('number', 'Temperature');
