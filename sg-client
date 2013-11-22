@@ -3,6 +3,12 @@
 # To log every 5 mins your laptop's temperature to your $SG_HOST
 # */5 * * * * ID=temp sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
 
+# Check if time is sane
+if test $(date +%s) -lt 1378882344
+then
+	return 1
+fi
+
 # Setup your SSH_ENV like so: https://github.com/kaihendry/Kai-s--HOME/blob/master/.xinitrc
 SSH_ENV=$HOME/.ssh/environment
 test -e "$SSH_ENV" && . $SSH_ENV
