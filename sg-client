@@ -18,16 +18,16 @@ g="unnamed"
 while getopts "r:g:d:i:" o
 do
 	case "$o" in
-	(g) g="$OPTARG";;  # graph name
-	(d) d="$OPTARG";;  # destination hostname
+	(g) g="$OPTARG" ;; # graph name
+	(d) d="$OPTARG" ;; # destination hostname
 	(r) dr="$OPTARG";; # destination root directory
 	(i) id="$OPTARG";; # override hostname as client id
 	esac
 done
 shift $((OPTIND - 1))
 
-# Crucial hierachy e.g. /var/sg/machine-id/temperature/022.csv, 022 is the day of the year
-f="$sr/$id/$g/$(date -u +%j).csv"
+# Crucial hierachy e.g. /var/sg/machine-id/temperature/14022.csv, 022 is the day of the year, 14 is last two digits of the year
+f="$sr/$id/$g/$(date -u +%y%j).csv"
 
 # MUST be rooted by EPOCH time
 if test -f "$1"
