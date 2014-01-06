@@ -1,10 +1,12 @@
-
-         dashboard.bind(control, chart);
-         dashboard.draw(data);
-      }
+data.sort([{column: 0}]);
 
 
-      google.setOnLoadCallback(drawVisualization);
+dashboard.bind(control, chart);
+dashboard.draw(data);
+}
+
+
+google.setOnLoadCallback(drawVisualization);
     </script>
   </head>
   <body>
