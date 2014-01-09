@@ -1,6 +1,6 @@
 #!/bin/bash
 # I am symlinked into graph directory, e.g. google.sh -> ../../bin/g/google.sh
-# e.g. google.sh -> ../../bin/g/google-30.sh last 30 days
+# e.g. google-30.sh -> ../../bin/g/google.sh # produces last 30 days
 # Run by https://github.com/kaihendry/sg/blob/master/sg-service
 
 days=$(echo $(basename $0 .sh) | cut -d"-" -f2)

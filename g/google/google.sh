@@ -3,7 +3,7 @@
 if test "$1" -gt 0 2>/dev/null
 then
 
-cat $(ls -t *.csv | head -n$1) | while read epoch val
+cat $(ls -t *.csv | head -n$1) | while read epoch val _
 do
 	test "$val" || continue
 	test "$epoch" -gt 100000 || continue
@@ -12,7 +12,7 @@ done
 
 else
 
-cat *.csv | while read epoch val
+cat *.csv | while read epoch val _
 do
 	test "$val" || continue
 	test "$epoch" -gt 100000 || continue
