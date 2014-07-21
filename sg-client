@@ -3,6 +3,12 @@
 # To log every 5 mins your laptop's temperature to your $SG_HOST
 # */5 * * * * ID=temp sg-client -d $SG_HOST -g temp /sys/class/thermal/thermal_zone0/temp
 
+# Check if time is sane
+if test $(date +%s) -lt 1378882344
+then
+	return 1
+fi
+
 # Setup your SSH_ENV like so: https://github.com/kaihendry/Kai-s--HOME/blob/master/.xinitrc
 SSH_ENV=$HOME/.ssh/environment
 test -e "$SSH_ENV" && . $SSH_ENV
@@ -42,5 +48,7 @@ echo $m >> "$f" || exit
 
 if test "$d"
 then
-	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --append -r $sr/$id/$g/*.csv $d:${dr:-$sr}/$id/$g/"
+	# Directing stderr to remove annoying Could not chdir to home directory /home/stats: No such file or directory
+	# Where rsync tries to chdir to /home/stats, stat's $HOME, despite the Match user stats's ChrootDirectory /var/sg setting
+	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --append -r $sr/$id/$g/*.csv $d:${dr:-$sr}/$id/$g/" 2>/dev/null
 fi
