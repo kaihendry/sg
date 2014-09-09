@@ -1,3 +1,4 @@
+]);
 data.sort([{column: 0}]);
 
     var chart = new google.visualization.ChartWrapper({
@@ -5,6 +6,7 @@ data.sort([{column: 0}]);
         containerId: 'chart_div',
         options: {
             height: 400,
+			crosshair: { trigger: 'both' },
             // omit width, since we set this in CSS
             chartArea: {
                 width: '75%' // this should be the same as the ChartRangeFilter
@@ -87,7 +89,7 @@ data.sort([{column: 0}]);
         }
     });
 }
-google.load('visualization', '1', {packages:['controls'], callback: drawChart});
+google.load('visualization', '1.1', {packages:['controls'], callback: drawChart});
 </script>
 
 <div id="dashboard_div">
