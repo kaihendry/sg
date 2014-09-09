@@ -8,19 +8,25 @@ else
 	top="-0"
 fi
 
-f=$(( $(awk 'NR==1 { print NF }' $(ls -t *.csv | head -n1)) - 1))
-echo Fields: $f 1>&2
+echo "data.addColumn('datetime', 'Date');"
 
-echo '["Date", "", ""],'
+f=$(( $(awk 'NR==1 { print NF }' $(ls -t *.csv | head -n1)) - 1))
+
+for ((i=1; i<=f; i++))
+do
+	echo "data.addColumn('number', '$(cat ${i}.header)');"
+done
 
 cat $(ls -t *.csv | head -n$top) | while read -a fields
 do
-	# Make sure we have a reading
-	test "${fields[1]}" || continue
 	# Make sure it's later than 3/3/1973
 	test "${fields[0]}" -gt 100000000 || continue
-	echo -n "[new Date(${fields[0]}000)"
-	for i in $(seq 1 $f)
+
+	# Make sure we have a reading
+	test "${fields[1]}" || continue
+
+	printf 'data.addRow([new Date(%s), %s' "${fields[0]}000" "${fields[1]}"
+	for ((i=2; i<=f; i++))
 	do
 		val=${fields[$i]}
 		if test "$val"
@@ -30,5 +36,5 @@ do
 			echo -n ", null"
 		fi
 	done
-	echo "],"
+	echo "]);"
 done
