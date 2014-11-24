@@ -51,5 +51,5 @@ if test "$d"
 then
 	# Directing stderr to remove annoying Could not chdir to home directory /home/stats: No such file or directory
 	# Where rsync tries to chdir to /home/stats, stat's $HOME, despite the Match user stats's ChrootDirectory /var/sg setting
-	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --append -r $sr/$id/$g/*.csv $d:${dr:-$sr}/$id/$g/" 2>/dev/null
+	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --include="*.csv" --append -r $sr/$id/$g/ $d:${dr:-$sr}/$id/$g/"
 fi
