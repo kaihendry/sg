@@ -14,7 +14,7 @@ f=$(( $(awk 'NR==1 { print NF }' $(ls -t *.csv | head -n1)) - 1))
 
 for ((i=1; i<=f; i++))
 do
-	echo "data.addColumn('number', '$(cat ${i}.header)');"
+	cat ${i}.header
 done
 
 cat $(ls -t *.csv | head -n$top) | while read -a fields
@@ -22,8 +22,8 @@ do
 	# Make sure it's later than 3/3/1973
 	test "${fields[0]}" -gt 100000000 || continue
 
-	# Make sure we have a reading
-	test "${fields[1]}" || continue
+	# Make sure we have all the values
+	test ${#fields[@]} -eq $f && continue
 
 	printf 'data.addRow([new Date(%s), %s' "${fields[0]}000" "${fields[1]}"
 	for ((i=2; i<=f; i++))
@@ -31,7 +31,7 @@ do
 		val=${fields[$i]}
 		if test "$val"
 		then
-			echo -n ", $val"
+			echo -n ", \"$val\""
 		else
 			echo -n ", null"
 		fi

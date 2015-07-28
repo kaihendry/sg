@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if test $(date +%s) -lt 100000000 # Make sure it's later than 3/3/1973
+then
+	echo "Time is in the past: $(date)" 1>&2
+	exit 1
+fi
+
+# Setup your SSH_ENV like so: https://github.com/kaihendry/dotfiles/blob/master/.xinitrc
+SSH_ENV=$HOME/.ssh/environment
+test -e "$SSH_ENV" && . $SSH_ENV
+
+cache=${XDG_CACHE_HOME:-$HOME/.cache}/sg
+mkdir -p $cache || true
+
+# to identify where the data is coming from
+id=$(hostname)
+
+# Every graph needs a name
+g="unnamed"
+
+while getopts "r:g:d:i:" o
+do
+	case "$o" in
+	(g) g="$OPTARG" ;; # graph name
+	(d) d="$OPTARG" ;; # destination hostname
+	(r) dr="$OPTARG";; # destination root directory
+	(i) id="$OPTARG";; # override hostname as client id
+	esac
+done
+shift $((OPTIND - 1))
+
+f="$cache/$id/$g/$(date -u +%y%j).csv"
+
+# MUST be rooted by EPOCH time
+if test -f "$1"
+then
+	m="$(date +%s) $(< $1)"
+else
+	m="$(date +%s) $(< /dev/stdin)"
+fi
+
+mkdir -p "$(dirname "$f")"
+echo $m >> "$f" || exit
+
+if test "$d"
+then
+	ssh $d mkdir -p ${dr:-$cache}/$id/$g/
+	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --include="*.csv" --exclude="*" --append -r $cache/$id/$g/ $d:${dr:-$cache}/$id/$g/"
+fi

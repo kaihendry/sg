@@ -1,3 +1,5 @@
+sudo systemctl start sgd@hendry.service
+
 Suckless Graphs does two things:
 
 1. Helps collect data you want, from any machine via ssh, in a CSV format anchored by epoch time

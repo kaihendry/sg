@@ -1,11 +1,11 @@
 #!/bin/bash
 
-sr=/var/sg # sg's root
+cache=${XDG_CACHE_HOME:-$HOME/.cache}/sg
 
 np="$(mktemp -d)/sg-$$"
 mkfifo "$np" || exit
 
-inotifywait -r -m -e CLOSE_WRITE "$sr" > "$np" & ipid=$!
+inotifywait -r -m -e CLOSE_WRITE "$cache" > "$np" & ipid=$!
 
 trap "kill $ipid; rm -f $np" EXIT
 
@@ -16,6 +16,6 @@ do
 	for i in *.sh
 	do
 		sh "$i"
-		echo $(date +%s): ${dir}${i}
+		test "$DEBUG" && echo $(date +%s): ${dir}${i}
 	done
 done < "$np"
