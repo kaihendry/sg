@@ -4,9 +4,11 @@ Suckless Graphs does two things:
 
 	$(date +%s) $(cat /sys/class/thermal/thermal_zone0/temp)
 
-`sgc`'s `-d` switch allows you to define another host to push the data to.
+`sgc`'s `-d` switch allows you to define a internet addressable **server** to push the data to.
 
-`sgd` offers a service that notices changes and calls symlinked *.sh scripts to plot that data
+Optionally `sgd` offers a service that notices changes and calls symlinked
+*.sh scripts to plot that data. This is typically run on the **server** but
+can be run on the client too.
 
 # <abbr title="Suckless Graphing">sg</abbr> features
 
@@ -50,4 +52,4 @@ version of the data generated on any update:
 
 With that script symlinked into the data directory, sgd will execute *.sh when it notices new data.
 
-So in this example `~/.cache/sg/X1C3/temp/gnuplot.png` will be generated whenever a CSV has been appended to.
+So in this example `~/.cache/sg/foo/temp/gnuplot.png` will be generated whenever a CSV has been appended to.
