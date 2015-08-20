@@ -1,11 +1,12 @@
 Suckless Graphs does two things:
 
-1. `sgc` helps collect simple time series data locally in a CSV format anchored by epoch time, e.g.
+`sgc` helps collect simple time series data locally in a CSV format anchored by epoch time, e.g.
+
 	$(date +%s) $(cat /sys/class/thermal/thermal_zone0/temp)
 
-The `-d` switch allows you to define another host to push the data to.
+`sgc`'s `-d` switch allows you to define another host to push the data to.
 
-2. `sgd` offers a service that notices changes and calls symlinked *.sh scripts to plot that data
+`sgd` offers a service that notices changes and calls symlinked *.sh scripts to plot that data
 
 # <abbr title="Suckless Graphing">sg</abbr> features
 
@@ -45,14 +46,8 @@ Data lands up in ~/.cache/sg/$HOSTNAME/temp
 In you collect data called "temp" from a machine named "foo" and you want a PNG
 version of the data generated on any update:
 
-	~/.cache/sg/foo/temp$ ln -s /usr/local/share/sg/plotters/all-png.sh
+	~/.cache/sg/foo/temp$ ln -s /usr/local/share/sg/plotters/gnuplot.sh
 
 With that script symlinked into the data directory, sgd will execute *.sh when it notices new data.
 
-So in this example `~/.cache/sg/X1C3/temp/all.png` will be generated whenever a CSV has been appended to.
-
-# Tips
-
-How to find a bad value:
-
-	awk '$2 ~ /4.1.5-1-ARCH/{print FILENAME":"$0; nextfile}' *.csv
+So in this example `~/.cache/sg/X1C3/temp/gnuplot.png` will be generated whenever a CSV has been appended to.
