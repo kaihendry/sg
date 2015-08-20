@@ -7,7 +7,7 @@ Suckless Graphs does two things:
 `sgc`'s `-d` switch allows you to define a internet addressable **server** to push the data to.
 
 Optionally `sgd` offers a service that notices changes and calls symlinked
-*.sh scripts to plot that data. This is typically run on the **server** but
+`*.sh` scripts to plot that data. This is typically run on the **server** but
 can be run on the client too.
 
 # <abbr title="Suckless Graphing">sg</abbr> features
