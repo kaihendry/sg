@@ -1,0 +1,8 @@
+[Unit]
+Description=Get temperature hourly
+
+[Timer]
+OnCalendar=hourly
+
+[Install]
+WantedBy=timers.target

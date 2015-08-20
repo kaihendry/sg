@@ -1,106 +1,12 @@
-data.sort([{column: 0}]);
+data.sort([{ column: 0 }]);
 
-    var chart = new google.visualization.ChartWrapper({
-        chartType: 'LineChart',
-        containerId: 'chart_div',
-        options: {
-            height: 400,
-			crosshair: { trigger: 'both' },
-            // omit width, since we set this in CSS
-            chartArea: {
-                width: '75%' // this should be the same as the ChartRangeFilter
-            }
-        }
-    });
-    
-    var control = new google.visualization.ControlWrapper({
-        controlType: 'ChartRangeFilter',
-        containerId: 'control_div',
-        options: {
-            filterColumnIndex: 0,
-            ui: {
-                chartOptions: {
-                    height: 50,
-                    // omit width, since we set this in CSS
-                    chartArea: {
-                        width: '75%' // this should be the same as the ChartRangeFilter
-                    }
-                }
-            }
-        }
-    });
-    
-    var dashboard = new google.visualization.Dashboard(document.querySelector('#dashboard_div'));
-    dashboard.bind([control], [chart]);
-    dashboard.draw(data);
-    
-    function zoomLastDay () {
-        var range = data.getColumnRange(0);
-        control.setState({
-            range: {
-                start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 1),
-                end: range.max
-            }
-        });
-        control.draw();
-    }
-    function zoomLastWeek () {
-        var range = data.getColumnRange(0);
-        control.setState({
-            range: {
-                start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 7),
-                end: range.max
-            }
-        });
-        control.draw();
-    }
-    function zoomLastMonth () {
-        // zoom here sets the month back 1, which can have odd effects when the last month has more days than the previous month
-        // eg: if the last day is March 31, then zooming last month will give a range of March 3 - March 31, as this sets the start date to February 31, which doesn't exist
-        // you can tweak this to make it function differently if you want
-        var range = data.getColumnRange(0);
-        control.setState({
-            range: {
-                start: new Date(range.max.getFullYear(), range.max.getMonth() - 1, range.max.getDate()),
-                end: range.max
-            }
-        });
-        control.draw();
-    }
-    
-    var runOnce = google.visualization.events.addListener(dashboard, 'ready', function () {
-        google.visualization.events.removeListener(runOnce);
-        
-        if (document.addEventListener) {
-            document.querySelector('#lastDay').addEventListener('click', zoomLastDay);
-            document.querySelector('#lastWeek').addEventListener('click', zoomLastWeek);
-            document.querySelector('#lastMonth').addEventListener('click', zoomLastMonth);
-        }
-        else if (document.attachEvent) {
-            document.querySelector('#lastDay').attachEvent('onclick', zoomLastDay);
-            document.querySelector('#lastWeek').attachEvent('onclick', zoomLastWeek);
-            document.querySelector('#lastMonth').attachEvent('onclick', zoomLastMonth);
-        }
-        else {
-            document.querySelector('#lastDay').onclick = zoomLastDay;
-            document.querySelector('#lastWeek').onclick = zoomLastWeek;
-            document.querySelector('#lastMonth').onclick = zoomLastMonth;
-        }
-    });
+var options = { legend: {position: 'none'}, chartArea: {width: '90%', height: '90%'} };
+
+var chart = new google.visualization.LineChart(document.getElementById('linechart_material'));
+
+chart.draw(data, options);
+console.log(google.visualization.data.count);
 }
-google.load('visualization', '1.1', {packages:['controls'], callback: drawChart});
+
 </script>
-
-<div id="dashboard_div">
-    Zoom<br />
-    <input id="lastDay" type="button" value="Last Day" />
-    <input id="lastWeek" type="button" value="Last Week" />
-    <input id="lastMonth" type="button" value="Last Month" />
-    <div id="chart_div"></div>
-    <div id="control_div"></div>
-</div>
-
-<p>Drawn by the Google grapher of <a href="https://github.com/kaihendry/sg/">Suckless Graphs</a></p>
-
-  </body>
-</html>
+</body></html>

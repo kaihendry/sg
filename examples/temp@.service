@@ -1,0 +1,6 @@
+[Unit]
+Description=Log temperature
+
+[Service]
+ExecStart=/bin/bash -c 'echo $(cat /sys/class/thermal/thermal_zone0/temp) $(cat /proc/sys/kernel/osrelease) | sgc -d sg.dabase.com -g temp'
+User=%i

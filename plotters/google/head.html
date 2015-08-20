@@ -4,9 +4,21 @@
 <meta charset="utf-8" />
 <title>Suckless Graphs Google Visualization</title>
 <style>
-#dashboard_div, #chart_div, #control_div { width: 100%; }
+html { width: 100%; height: 100%;}
+body { width: 99%; height: 99%; display: flex; flex-direction: column; }
+body > * { flex: 1; }
 </style>
-<script src="//www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['line', 'corechart']}]}"></script>
+</head>
+<body>
+
+<div id="linechart_material"></div>
+
 <script>
+google.load('visualization', '1.1', {
+	packages: ['line']
+});
+google.setOnLoadCallback(drawChart);
+
 function drawChart() {
 var data = new google.visualization.DataTable();

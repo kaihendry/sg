@@ -1,101 +1,58 @@
-sudo systemctl start sgd@hendry.service
-
 Suckless Graphs does two things:
 
-1. Helps collect data you want, from any machine via ssh, in a CSV format anchored by epoch time
-2. Offers scripts to graph that data
+1. `sgc` helps collect simple time series data locally in a CSV format anchored by epoch time, e.g.
+	$(date +%s) $(cat /sys/class/thermal/thermal_zone0/temp)
+
+The `-d` switch allows you to define another host to push the data to.
+
+2. `sgd` offers a service that notices changes and calls symlinked *.sh scripts to plot that data
 
 # <abbr title="Suckless Graphing">sg</abbr> features
 
+* Simple
 * Designed for a [time series](http://en.wikipedia.org/wiki/Time_series)
 * sg-* are  <100 SLOC
 * Uses rsync to copy things over, network tolerant, keep a SSH control socket open to make it faster
-* [c/](c/) for example cronjob scripts to get interesting data to plot
-* [g/](g/) for example graphing scripts to plot PNGs or Web graphics
-* By default stores only one year of data
+* [examples/](examples/) contains a systemd timer example to get interesting data to plot
+* [plotters/](plotters/) are graphing scripts to plot PNGs or Web pages
 
 # Setting up "suckless graphing"
 
-	mkdir /var/sg
-	chown -R $USER:www-data /var/sg
-	cd /var/sg
-	/var/sg$ git clone git@github.com:kaihendry/sg.git bin
-	SG_HOST=$(hostname)
+	make
 
-Assuming you have [Virtual hosting](http://dabase.com/e/04025/) setup from `/srv/www`
+Notice the assumed ` /usr/local/share/` directory
 
-## Running sg-service that invokes the graphers on $SG_HOST
+## How to collect data
 
-Graphing scripts are linked in `/var/sg/$hostname_of_source/$graph_name# ln -s ../../bin/g/all-png.sh`.
+Assuming an example temperature script is in place:
 
-When `sg-client` appends to the CSV file named after the day of the year, this
-event is detected by `sg-service` and the linked in graph shell scripts are
-run. The graphs they produce are in turn updated.
+	$ ls /etc/systemd/system/sg*
+	/etc/systemd/system/sgc-temp@.service  /etc/systemd/system/sgc-temp@.timer
 
-	$SG_HOST:/var/sg/bin$ ./sg-service
-	Setting up watches.  Beware: since -r was given, this may take a while!
-	Watches established.
-	1359953560: /var/sg/x220/temp/all-png.sh
+	systemctl list-timers | grep sgc
+	sudo systemctl start sgc-temp@$USER.timer
+	sudo systemctl enable sgc-temp@$USER.timer
 
-There is also a [systemd sg service file](sg.service).
+Learn about systemd timers to adjust the frequency.
 
-## Example graphs using sg-client
+Data lands up in ~/.cache/sg/$HOSTNAME/temp
 
-### Plotting a thermometer attached to a Raspberry PI
+## How to setup plotters for your data
 
-Running as a cronjob every 5 minutes on a [Rpi with a thermometer](http://www.flickr.com/photos/hendry/9649125655/):
+	sudo systemctl start sgd@$USER.service
+	sudo systemctl enable sgd@$USER.service
 
-	*/5 * * * * ~/temp/a.out | ~/bin/sg/sg-client -r / -d stats@sg.webconverger.com -g temp
+In you collect data called "temp" from a machine named "foo" and you want a PNG
+version of the data generated on any update:
 
-See the [graph directory](/g) for the shell scripts that generate these outputs:
+	~/.cache/sg/foo/temp$ ln -s /usr/local/share/sg/plotters/all-png.sh
 
-* http://stats.webconverger.org/pihsg/temp/all.png
-* http://stats.webconverger.org/pihsg/temp/google.html
-* http://stats.webconverger.org/pihsg/temp/morris.html
-* http://stats.webconverger.org/pihsg/temp/flot.html
+With that script symlinked into the data directory, sgd will execute *.sh when it notices new data.
 
-This assumes I have a ssh connection open with the destination host `sg`:
+So in this example `~/.cache/sg/X1C3/temp/all.png` will be generated whenever a CSV has been appended to.
 
-### Plotting the temperature of my laptop as well as the kernel version
+# Tips
 
-	*/5 * * * * echo $(cat /sys/class/thermal/thermal_zone0/temp) $(uname -r) | ~/bin/sg/sg-client -d sg -g temp
+How to find a bad value:
 
-<img width=640 height=480 src=http://stats.webconverger.org/x220/temp/latest.png>
-
-## Setting up a jailed stats user on $SG_HOST with OpenSSH's ChrootDirectory (tricky & optional)
-
-$SG_HOST's `/etc/passwd` entry:
-
-	stats:x:1006:1006::/home/stats:/bin/sh
-
-Append keys to `/home/stats/.ssh/authorized_keys`
-
-in `/etc/ssh/sshd_config`:
-
-	Match user stats
-	ChrootDirectory /var/sg
-
-You will see `fatal: bad ownership or modes for chroot directory "/var/sg"`
-unless it's owned by root. You can alter subdirectory permissions to whatever you want.
-
-Next you will see failing with: `/bin/sh: No such file or directory`
-
-	cp /bin/busybox /var/sg/bin/sh
-
-Test with `ssh stats@SG_HOST`
-
-Crontab root needs to be tweaked like so:
-
-	*/10 * * * * /var/sg/bin/c/temp.sh | /var/sg/bin/sg-client -r / -g temp -d stats@sg.webconverger.com
-
-Notice the `-r /` for the chroot path and the user@.
-
-Make sure your ControlPath is setup, `cat ~/.ssh/config`:
-
-	Host *
-	ControlPath ~/.ssh/master-%r@%h:%p
-	ControlMaster auto
-
-And keep an ssh connection open to make it **fast**.
-
-To setup rsync, follow this [rsync ChrootDirectory guide](http://en.positon.org/post/SFTP-chroot-rsync)
+	awk '$2 ~ /4.1.5-1-ARCH/{print FILENAME":"$0; nextfile}' *.csv

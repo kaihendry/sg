@@ -1,6 +1,6 @@
 PREFIX = /usr/local
 
-install: 
+install:
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
 	@cp -f sgc sgd ${DESTDIR}${PREFIX}/bin
 	@mkdir -p ${DESTDIR}${PREFIX}/share/sg
