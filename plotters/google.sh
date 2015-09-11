@@ -7,15 +7,15 @@ then
 
 template=$(dirname $(readlink -f $0))/google
 echo $template/google.sh $days
-cat $template/head.html > google-$days.html
-$template/google.sh $days >> google-$days.html
-cat $template/tail.html >> google-$days.html
+cat $template/head.html > $WWWDIR/google-$days.html
+$template/google.sh $days >> $WWWDIR/google-$days.html
+cat $template/tail.html >> $WWWDIR/google-$days.html
 
 else
 
 template=$(dirname $(readlink -f $0))/google
-cat $template/head.html > google.html
-$template/google.sh >> google.html
-cat $template/tail.html >> google.html
+cat $template/head.html > $WWWDIR/google.html
+$template/google.sh >> $WWWDIR/google.html
+cat $template/tail.html >> $WWWDIR/google.html
 
 fi

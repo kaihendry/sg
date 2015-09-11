@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export WWWDIR=${WWWDIR:-/var/www}
 cache=${XDG_CACHE_HOME:-$HOME/.cache}/sg
 
 np="$(mktemp -d)/sg-$$"
