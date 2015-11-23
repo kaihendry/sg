@@ -1,6 +1,5 @@
 #!/bin/bash
 
-export WWWDIR=${WWWDIR:-/var/www}
 cache=${XDG_CACHE_HOME:-$HOME/.cache}/sg
 
 np="$(mktemp -d)/sg-$$"
@@ -12,11 +11,21 @@ trap "kill $ipid; rm -f $np" EXIT
 
 while read -r dir event filename
 do
+	# If it's not a CSV file changing, then we ignore the event
 	if test "${filename##*.}" != "csv"; then continue; fi
+
 	cd "$dir"
+
+	# Generate the graph
 	for i in *.sh
 	do
-		sh "$i"
-		test "$DEBUG" && echo $(date +%s): ${dir}${i}
+		if test "$DEBUG"
+		then
+			echo $(date +%s): ${dir}${i}
+			sh -x "$i"
+		else
+			sh "$i"
+		fi
 	done
+
 done < "$np"

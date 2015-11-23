@@ -53,3 +53,10 @@ version of the data generated on any update:
 With that script symlinked into the data directory, sgd will execute *.sh when it notices new data.
 
 So in this example `~/.cache/sg/foo/temp/gnuplot.png` will be generated whenever a CSV has been appended to.
+
+# Linking to your webdir root
+
+If you get `13: Permission denied` you need to:
+
+	$ chmod +rX -R .cache/
+	$ chmod +rX $HOME

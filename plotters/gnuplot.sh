@@ -2,7 +2,7 @@
 # I am symlinked from sg's plotter directory
 
 t=$(mktemp)
-o="$WWWDIR/${0%.sh*}.png"
+o="${0%.sh*}.png"
 
 cat << END > $t
 set term pngcairo size 1024,768
