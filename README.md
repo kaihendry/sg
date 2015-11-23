@@ -56,7 +56,15 @@ So in this example `~/.cache/sg/foo/temp/gnuplot.png` will be generated whenever
 
 # Linking to your webdir root
 
+Step one, link in the plotter script:
+
+	~/.cache/sg/X1C3/temp$ ln -s /usr/local/share/sg/plotters/google.sh
+
+Step two, link the generated output to your web root:
+
+	/usr/share/nginx/html$ ln -s ~/.cache/sg/X1C3/temp/google.html
+
 If you get `13: Permission denied` you need to:
 
-	$ chmod +rX -R ~/.cache/
-	$ chmod +rX $HOME
+	chmod +rX -R ~/.cache/
+	chmod +rX $HOME
