@@ -10,8 +10,7 @@ fi
 SSH_ENV=$HOME/.ssh/environment
 test -e "$SSH_ENV" && . $SSH_ENV
 
-cache=${XDG_CACHE_HOME:-$HOME/.cache}/sg
-mkdir -p $cache || true
+mkdir -p ~/.cache || true
 
 # to identify where the data is coming from
 id=$(hostname)
@@ -30,7 +29,7 @@ do
 done
 shift $((OPTIND - 1))
 
-f="$cache/$id/$g/$(date -u +%y%j).csv"
+f="$HOME/.cache/sg/$id/$g/$(date -u +%y%j).csv"
 
 # MUST be rooted by EPOCH time
 if test -f "$1"
@@ -43,8 +42,10 @@ fi
 mkdir -p "$(dirname "$f")"
 echo $m >> "$f" || exit
 
+cd $HOME
+
 if test "$d"
 then
-	ssh $d mkdir -p ${dr:-$cache}/$id/$g/
-	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --include="*.csv" --exclude="*" --append -r $cache/$id/$g/ $d:${dr:-$cache}/$id/$g/"
+	ssh $d mkdir -p .cache/sg/$id/$g/ # Why can't rsync create missing directories
+	flock -n "/tmp/sg-${id}-${g}" -c "rsync -e ssh --include="*.csv" --exclude="*" --append -r .cache/sg/$id/$g/ $d:.cache/sg/$id/$g/"
 fi
